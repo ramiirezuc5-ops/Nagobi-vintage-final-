@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAGOBI VINTAGE</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23141311%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2722%27 fill=%27%23FF5A1F%27/%3E%3C/svg%3E">
+<meta name="theme-color" content="#141311">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dark:#141311;--dark2:#1D1B17;--paper:#F1ECDF;--paper2:#E8E1CE;--ink:#141311;
+    --orange:#FF5A1F;--acid:#C9D94B;--stamp:#C4292B;--line:#3A362E;--line-lt:#D8D0BC;
+    --muted:#8A8375;--muted-lt:#6B655A;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.005em;margin:0;line-height:.92;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 26px;}
+  :focus-visible{outline:3px solid var(--orange);outline-offset:2px;}
+
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:200;opacity:.045;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---- header (igual que la tienda) ---- */
+  header{position:sticky;top:0;z-index:50;background:var(--dark);border-bottom:3px solid var(--ink);}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:20px;}
+  .logo{font-family:'Anton',sans-serif;font-size:26px;color:var(--paper);letter-spacing:.01em;display:flex;align-items:center;gap:10px;}
+  .logo .dot{width:9px;height:9px;background:var(--orange);border-radius:50%;}
+  .seller-link{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B7B0A0;border:1px solid var(--line);padding:10px 14px;text-transform:uppercase;letter-spacing:.05em;}
+  .seller-link:hover{color:var(--paper);border-color:var(--orange);}
+  .cart-btn{position:relative;background:var(--orange);color:var(--ink);border:none;padding:11px 18px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:9px;}
+  .cart-btn:hover{background:var(--acid);}
+  .cart-count{background:var(--ink);color:var(--paper);border-radius:50%;width:19px;height:19px;display:flex;align-items:center;justify-content:center;font-size:10.5px;}
+
+  /* ---- producto ---- */
+  .crumbs{padding:22px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-lt);}
+  .crumbs a:hover{color:var(--orange);text-decoration:underline;}
+  .crumbs span{margin:0 8px;}
+
+  .product{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:52px;padding:26px 0 64px;align-items:start;}
+
+  .gallery{position:relative;}
+  .stage{position:relative;border:2px solid var(--ink);background:var(--paper2);aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;overflow:hidden;transform:rotate(-.5deg);}
+  .stage .pin{position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:13px;height:13px;border-radius:50%;background:var(--stamp);border:2px solid var(--ink);z-index:5;}
+  .stage img{width:100%;height:100%;object-fit:contain;cursor:zoom-in;}
+  .stage svg{width:38%;height:38%;}
+  .stage-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:none;background:rgba(20,19,17,.6);color:#fff;font-size:22px;line-height:1;z-index:4;}
+  .stage-nav:hover{background:var(--orange);color:var(--ink);}
+  .stage-nav.prev{left:12px;}
+  .stage-nav.next{right:12px;}
+  .stage-count{position:absolute;bottom:12px;right:12px;z-index:4;background:var(--ink);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 9px;letter-spacing:.05em;}
+  .zoom-hint{position:absolute;bottom:12px;left:12px;z-index:4;background:var(--paper);border:1.5px solid var(--ink);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding:4px 9px;pointer-events:none;}
+  .thumbs{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+  .thumb{width:76px;height:76px;border:2px solid var(--line-lt);background:var(--paper2);padding:0;overflow:hidden;opacity:.75;}
+  .thumb img{width:100%;height:100%;object-fit:cover;}
+  .thumb:hover{opacity:1;border-color:var(--ink);}
+  .thumb.active{border-color:var(--orange);opacity:1;}
+
+  .info .badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+  .badge{font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;background:var(--ink);color:var(--paper);padding:4px 9px;}
+  .badge.deca{background:var(--orange);color:var(--ink);}
+  .badge.nuevo{background:var(--acid);color:var(--ink);}
+  .info .cat{font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-lt);}
+  .info h1{font-size:clamp(40px,5.2vw,68px);margin:8px 0 18px;line-height:.95;overflow-wrap:anywhere;}
+  .price-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 0;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);}
+  .price{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:32px;}
+  .stamp{border:2px solid var(--stamp);color:var(--stamp);padding:7px 13px;transform:rotate(-4deg);font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;text-align:center;}
+  .stamp b{display:block;font-family:'Anton',sans-serif;font-size:17px;font-weight:400;letter-spacing:.02em;}
+
+  .block{margin-top:26px;}
+  .block h3{font-size:18px;margin-bottom:10px;}
+  .desc{font-size:15px;line-height:1.7;color:var(--muted-lt);white-space:pre-line;max-width:60ch;margin:0;overflow-wrap:anywhere;}
+  .desc.empty{font-style:italic;}
+  .specs{border:1.5px dashed var(--line-lt);background:#fff;margin:0;}
+  .specs div{display:flex;justify-content:space-between;gap:14px;padding:10px 14px;font-size:13.5px;}
+  .specs div + div{border-top:1px solid var(--line-lt);}
+  .specs dt{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-lt);align-self:center;}
+  .specs dd{margin:0;font-weight:700;text-align:right;}
+
+  .actions{display:flex;flex-direction:column;gap:10px;margin-top:28px;}
+  .btn{width:100%;border:2px solid var(--ink);padding:15px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;text-align:center;display:block;}
+  .btn.primary{background:var(--ink);color:var(--paper);}
+  .btn.primary:hover{background:var(--orange);color:var(--ink);}
+  .btn.ghost{background:transparent;color:var(--ink);}
+  .btn.ghost:hover{background:var(--ink);color:var(--paper);}
+  .perks{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+  .perks span{font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line-lt);padding:6px 10px;color:var(--muted-lt);}
+
+  /* ---- relacionados ---- */
+  .related{background:var(--paper2);padding:48px 0 56px;border-top:3px solid var(--ink);}
+  .related h2{font-size:clamp(28px,3.6vw,40px);margin-bottom:24px;}
+  .rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;}
+  .rel-card{position:relative;border:2px solid var(--ink);background:#fff;display:block;transition:transform .2s;}
+  .rel-card:hover{transform:translateY(-4px);}
+  .rel-card .ri{height:170px;background:var(--paper2);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .rel-card .ri img{width:100%;height:100%;object-fit:contain;}
+  .rel-card .ri svg{width:80px;height:80px;}
+  .rel-card .rb{padding:9px 11px 10px;border-top:2px solid var(--ink);}
+  .rel-card .rn{font-family:'Anton',sans-serif;font-size:14px;line-height:1.05;margin-bottom:6px;}
+  .rel-card .rp{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12.5px;}
+
+  /* ---- no encontrado ---- */
+  .notfound{border:2px dashed var(--line-lt);padding:70px 20px;margin:40px 0 70px;text-align:center;color:var(--muted-lt);}
+  .notfound h2{font-size:40px;color:var(--ink);margin-bottom:12px;}
+  .notfound .btn{display:inline-block;width:auto;padding:13px 26px;margin-top:22px;}
+
+  /* ---- lightbox ---- */
+  .lightbox{position:fixed;inset:0;z-index:300;background:rgba(20,19,17,.94);display:none;align-items:center;justify-content:center;padding:56px 70px;}
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:100%;max-height:100%;object-fit:contain;border:2px solid var(--paper);background:var(--paper2);}
+  .lb-btn{position:absolute;background:transparent;border:1px solid var(--paper);color:var(--paper);width:44px;height:44px;border-radius:50%;font-size:20px;line-height:1;}
+  .lb-btn:hover{background:var(--paper);color:var(--ink);}
+  .lb-close{top:16px;right:16px;}
+  .lb-prev{left:16px;top:50%;transform:translateY(-50%);}
+  .lb-next{right:16px;top:50%;transform:translateY(-50%);}
+  .lb-count{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper);letter-spacing:.08em;}
+
+  footer{background:var(--dark);color:#C7C0AF;padding:30px 0;}
+  .foot-line{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:12px;}
+  .foot-line a{font-family:'IBM Plex Mono',monospace;color:#9A9384;}
+  .foot-line a:hover{color:var(--orange);}
+
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);padding:13px 22px;font-family:'IBM Plex Mono',monospace;font-size:13px;z-index:320;opacity:0;pointer-events:none;transition:.25s;border:1px solid var(--orange);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media(max-width:860px){
+    .product{grid-template-columns:1fr;gap:38px;}
+    .stage{transform:none;}
+    .lightbox{padding:60px 14px;}
+    .lb-prev{left:6px;}.lb-next{right:6px;}
+  }
+  @media(max-width:560px){
+    .topbar{flex-wrap:wrap;}
+    .seller-link{display:none;}
+    .thumb{width:62px;height:62px;}
+  }
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap topbar">
+    <a href="index.html" class="logo"><span class="dot"></span>NAGOBI VINTAGE</a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="index.html#catalogo" class="seller-link mono">← Catálogo</a>
+      <a href="index.html#bolsa" class="cart-btn" id="cartBtn">Carrito <span class="cart-count" id="cartCount">0</span></a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="root"></main>
+
+<div class="related" id="relatedWrap" style="display:none;">
+  <div class="wrap">
+    <h2>Más como esta</h2>
+    <div class="rel-grid" id="relGrid"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-line">
+    <span>© 2026 Nagobi Vintage — pieza única</span>
+    <a href="index.html">Volver a la tienda →</a>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Galería de fotos">
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Cerrar">✕</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Foto anterior">‹</button>
+  <img id="lbImg" alt="">
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Foto siguiente">›</button>
+  <div class="lb-count mono" id="lbCount"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WHATSAPP_NUMBER='5493518012324';
+const PRODUCTS_KEY='nagobi_vendor_products';
+const CART_KEY='nagobi_cart';
+const CAT_LABEL={remeras:'Remeras',pantalones:'Pantalones',buzos:'Buzos',accesorios:'Accesorios'};
+
+function icon(cat){
+  const c='var(--ink)';
+  const icons={
+    remeras:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M30 15 L10 28 L18 42 L28 35 L28 88 L72 88 L72 35 L82 42 L90 28 L70 15 C70 15 63 24 50 24 C37 24 30 15 30 15 Z"/></svg>`,
+    pantalones:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M22 12 L78 12 L82 90 L58 90 L50 40 L42 90 L18 90 Z"/><line x1="22" y1="12" x2="78" y2="12"/></svg>`,
+    buzos:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M32 12 L14 24 L22 40 L30 34 L30 90 L70 90 L70 34 L78 40 L86 24 L68 12 C68 12 62 26 50 26 C38 26 32 12 32 12 Z"/><path d="M42 12 C42 20 58 20 58 12"/></svg>`,
+    accesorios:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><circle cx="50" cy="38" r="20"/><circle cx="50" cy="38" r="7"/><path d="M50 58 L50 90"/><path d="M38 90 L62 90"/></svg>`
+  };
+  return icons[cat]||icons.accesorios;
+}
+function money(n){return '$'+Number(n).toLocaleString('es-AR');}
+function productImages(p){return (p.images&&p.images.length)?p.images:(p.img?[p.img]:[]);}
+function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
+
+/* ---- datos ---- */
+let products=[];
+try{products=JSON.parse(localStorage.getItem(PRODUCTS_KEY)||'[]');}catch(e){products=[];}
+const id=new URLSearchParams(location.search).get('id');
+const p=products.find(x=>String(x.id)===String(id));
+
+/* ---- carrito (compartido con la tienda vía localStorage) ---- */
+function readCart(){try{return JSON.parse(localStorage.getItem(CART_KEY)||'[]');}catch(e){return [];}}
+function updateCartCount(){
+  const total=readCart().filter(r=>products.some(x=>String(x.id)===String(r.id))).reduce((s,r)=>s+(r.qty||0),0);
+  document.getElementById('cartCount').textContent=total;
+}
+function addToCart(){
+  const cart=readCart();
+  if(cart.some(r=>String(r.id)===String(p.id))){showToast('Ya está en tu carrito');return;}
+  cart.push({id:p.id,qty:1});
+  try{localStorage.setItem(CART_KEY,JSON.stringify(cart));}catch(e){}
+  updateCartCount();
+  showToast('Agregado al carrito');
+}
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+window.addEventListener('storage',e=>{if(e.key===CART_KEY||e.key===PRODUCTS_KEY)updateCartCount();});
+updateCartCount();
+
+/* ---- render ---- */
+const root=document.getElementById('root');
+
+if(!p){
+  document.title='Prenda no encontrada — NAGOBI VINTAGE';
+  root.innerHTML=`<div class="notfound"><h2>Esta prenda ya no está</h2><p>Es pieza única: puede que ya se haya vendido o que el vendedor la haya retirado.</p><a class="btn primary" href="index.html#catalogo">Ver el catálogo</a></div>`;
+}else{
+  document.title=p.name+' — NAGOBI VINTAGE';
+  const imgs=productImages(p);
+  const catLabel=CAT_LABEL[p.cat]||p.cat||'';
+  let idx=0;
+
+  const crumbs=el('div','crumbs');
+  const a1=el('a',null,'Tienda');a1.href='index.html';
+  const a2=el('a',null,catLabel);a2.href='index.html#catalogo';
+  crumbs.append(a1,el('span',null,'/'),a2,el('span',null,'/'),document.createTextNode(p.name));
+
+  const product=el('div','product');
+
+  /* galería */
+  const gallery=el('div','gallery');
+  const stage=el('div','stage');
+  stage.appendChild(el('div','pin'));
+  const stageMedia=el('div');stageMedia.style.cssText='width:100%;height:100%;display:flex;align-items:center;justify-content:center;';
+  stage.appendChild(stageMedia);
+  gallery.appendChild(stage);
+
+  const thumbs=el('div','thumbs');
+  const counter=el('div','stage-count');
+
+  if(imgs.length){
+    stage.append(el('div','zoom-hint','Tocá para ampliar'));
+    if(imgs.length>1){
+      const prev=el('button','stage-nav prev','‹');prev.setAttribute('aria-label','Foto anterior');
+      const next=el('button','stage-nav next','›');next.setAttribute('aria-label','Foto siguiente');
+      prev.addEventListener('click',()=>go(idx-1));
+      next.addEventListener('click',()=>go(idx+1));
+      stage.append(prev,next,counter);
+      imgs.forEach((src,i)=>{
+        const b=el('button','thumb');b.setAttribute('aria-label','Ver foto '+(i+1));
+        const im=document.createElement('img');im.src=src;im.alt='';b.appendChild(im);
+        b.addEventListener('click',()=>go(i));
+        thumbs.appendChild(b);
+      });
+      gallery.appendChild(thumbs);
+    }
+  }
+
+  function renderStage(){
+    stageMedia.innerHTML='';
+    if(imgs.length){
+      const im=document.createElement('img');im.src=imgs[idx];im.alt=p.name;
+      im.addEventListener('click',()=>openLightbox(idx));
+      stageMedia.appendChild(im);
+      counter.textContent=(idx+1)+' / '+imgs.length;
+      [...thumbs.children].forEach((t,i)=>t.classList.toggle('active',i===idx));
+    }else{
+      stageMedia.innerHTML=icon(p.cat);
+    }
+  }
+  function go(i){idx=(i+imgs.length)%imgs.length;renderStage();}
+
+  /* swipe en celular */
+  let tx=null;
+  stage.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+  stage.addEventListener('touchend',e=>{
+    if(tx===null||imgs.length<2)return;
+    const dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>45)go(idx+(dx<0?1:-1));
+    tx=null;
+  });
+
+  /* info */
+  const info=el('div','info');
+  const badges=el('div','badge-row');
+  if(p.mine)badges.appendChild(el('span','badge nuevo','Nuevo'));
+  if(p.deca)badges.appendChild(el('span','badge deca',p.deca));
+  if(p.cond)badges.appendChild(el('span','badge',p.cond));
+  info.appendChild(badges);
+  info.appendChild(el('div','cat',catLabel));
+  info.appendChild(el('h1',null,p.name));
+
+  const priceRow=el('div','price-row');
+  priceRow.appendChild(el('div','price',money(p.price)));
+  const stamp=el('div','stamp','Pieza');stamp.appendChild(el('b',null,'ÚNICA'));
+  priceRow.appendChild(stamp);
+  info.appendChild(priceRow);
+
+  const descBlock=el('div','block');
+  descBlock.appendChild(el('h3',null,'Sobre la prenda'));
+  const hasDesc=p.desc&&p.desc.trim();
+  descBlock.appendChild(el('p','desc'+(hasDesc?'':' empty'),hasDesc?p.desc:'El vendedor todavía no agregó una descripción. Consultanos por WhatsApp y te pasamos talle, medidas y más fotos.'));
+  info.appendChild(descBlock);
+
+  const specBlock=el('div','block');
+  specBlock.appendChild(el('h3',null,'Ficha'));
+  const dl=el('dl','specs');
+  [['Categoría',catLabel],['Década',p.deca],['Condición',p.cond],['Stock','1 unidad']].forEach(([k,v])=>{
+    if(!v)return;
+    const row=document.createElement('div');
+    row.append(el('dt',null,k),el('dd',null,v));
+    dl.appendChild(row);
+  });
+  specBlock.appendChild(dl);
+  info.appendChild(specBlock);
+
+  const actions=el('div','actions');
+  const add=el('button','btn primary','Agregar al carrito');add.type='button';
+  add.addEventListener('click',addToCart);
+  const wa=el('a','btn ghost','Consultar por WhatsApp');
+  const msg=`Hola! Me interesa esta prenda de Nagobi Vintage: ${p.name} (${money(p.price)}). ¿Sigue disponible?`;
+  wa.href=`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  wa.target='_blank';wa.rel='noopener';
+  actions.append(add,wa);
+  info.appendChild(actions);
+
+  const perks=el('div','perks');
+  ['📦 Envíos a todo el país','🏠 Retiro sin cargo','🧵 Pieza única'].forEach(t=>perks.appendChild(el('span',null,t)));
+  info.appendChild(perks);
+
+  product.append(gallery,info);
+  root.append(crumbs,product);
+  renderStage();
+
+  /* relacionados */
+  const rel=products.filter(x=>String(x.id)!==String(p.id)&&x.cat===p.cat).slice(0,4);
+  if(rel.length){
+    const grid=document.getElementById('relGrid');
+    rel.forEach(r=>{
+      const a=el('a','rel-card');a.href='producto.html?id='+encodeURIComponent(r.id);
+      const ri=el('div','ri');
+      const first=productImages(r)[0];
+      if(first){const im=document.createElement('img');im.src=first;im.alt=r.name;ri.appendChild(im);}else ri.innerHTML=icon(r.cat);
+      const rb=el('div','rb');
+      rb.append(el('div','rn',r.name),el('div','rp',money(r.price)));
+      a.append(ri,rb);grid.appendChild(a);
+    });
+    document.getElementById('relatedWrap').style.display='block';
+  }
+
+  /* lightbox */
+  const lb=document.getElementById('lightbox');
+  const lbImg=document.getElementById('lbImg');
+  const lbCount=document.getElementById('lbCount');
+  function lbShow(){
+    lbImg.src=imgs[idx];lbImg.alt=p.name;
+    lbCount.textContent=imgs.length>1?(idx+1)+' / '+imgs.length:'';
+    document.getElementById('lbPrev').style.display=document.getElementById('lbNext').style.display=imgs.length>1?'block':'none';
+  }
+  function openLightbox(i){idx=i;lbShow();lb.classList.add('open');document.body.style.overflow='hidden';}
+  function closeLightbox(){lb.classList.remove('open');document.body.style.overflow='';renderStage();}
+  document.getElementById('lbClose').addEventListener('click',closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click',()=>{idx=(idx-1+imgs.length)%imgs.length;lbShow();});
+  document.getElementById('lbNext').addEventListener('click',()=>{idx=(idx+1)%imgs.length;lbShow();});
+  lb.addEventListener('click',e=>{if(e.target===lb)closeLightbox();});
+  document.addEventListener('keydown',e=>{
+    const open=lb.classList.contains('open');
+    if(e.key==='Escape'&&open)closeLightbox();
+    if(imgs.length>1&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){
+      const d=e.key==='ArrowLeft'?-1:1;
+      if(open){idx=(idx+d+imgs.length)%imgs.length;lbShow();}else go(idx+d);
+    }
+  });
+}
+</script>
+</body>
+</html>
