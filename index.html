@@ -292,10 +292,10 @@
       <div class="ship-card">
         <span class="eyebrow">Opción 2</span>
         <h3>Coordinar retiro</h3>
-        <p>Sin cargo. Retirás tu prenda en el local y la revisás en persona antes de llevártela.</p>
+        <p>Coordinamos un punto de encuentro y horario para que retires tu prenda. Podés revisarla en persona antes de llevártela.
+</p>
         <ul>
-          <li>Calle San Martín 456, Córdoba, Argentina.</li>
-          <li>Martes a sábado, de 10 a 19 h.</li>
+          <li>Córdoba Capital, Argentina.</li>
           <li>Coordinamos el horario exacto por WhatsApp para que no esperes.</li>
         </ul>
       </div>
@@ -671,7 +671,7 @@ document.getElementById('productGrid').addEventListener('click',e=>{
   if(card&&card.dataset.id)window.open(productUrl(card.dataset.id),'_blank','noopener');
 });
 
-const stripWords=['ROPA ÚNICA','PIEZA POR PIEZA','SIN STOCK REPETIDO','DE BARRIO','','ROPA ÚNICA','PIEZA POR PIEZA','SIN STOCK REPETIDO','DE BARRIO',''];
+const stripWords=['ROPA ÚNICA','PIEZA POR PIEZA','SIN STOCK REPETIDO','ROPA ÚNICA','PIEZA POR PIEZA','SIN STOCK REPETIDO',''];
 document.getElementById('stripTrack').innerHTML = stripWords.map(w=>w?`<span>${w}</span>`:'★').join(' ');
 
 /* ---------- CART ---------- */
