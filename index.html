@@ -37,7 +37,7 @@
   }
 
   header{position:sticky;top:0;z-index:50;background:var(--dark);border-bottom:3px solid var(--ink);}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:20px;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding-top:16px;padding-bottom:16px;gap:20px;}
   .logo{font-family:'Anton',sans-serif;font-size:26px;color:var(--paper);letter-spacing:.01em;display:flex;align-items:center;gap:10px;}
   .logo .dot{width:9px;height:9px;background:var(--orange);border-radius:50%;}
   nav.cats{display:flex;gap:24px;}
@@ -232,7 +232,7 @@
       <button data-cat="remeras">Remeras</button>
       <button data-cat="pantalones">Pantalones</button>
       <button data-cat="buzos">Buzos</button>
-      <button data-cat="accesorios">Accesorios</button>
+      <button data-cat="camperas">Camperas</button>
     </nav>
     <div style="display:flex;align-items:center;gap:12px;">
       <a href="#envios" class="seller-link mono">Envíos</a>
@@ -247,7 +247,7 @@
     <div class="eyebrow-row"><span class="eyebrow">Ropa de segunda con historia</span></div>
     <h1>Lejos de la tendencia, <br>cerca de lo real<span class="accent">.</span></h1>
     <div class="hero-sub">
-      <p>Vintage real: remeras, pantalones, buzos y accesorios de otras décadas, una sola unidad de cada prenda. Nada de producción en masa.</p>
+      <p>Vintage real: remeras, pantalones, buzos y camperas de otras décadas, una sola unidad de cada prenda. Nada de producción en masa.</p>
       <div class="hero-stamp">Pieza<b>ÚNICA</b>garantizada</div>
     </div>
     <div class="carousel">
@@ -291,7 +291,7 @@
       </div>
       <div class="ship-card">
         <span class="eyebrow">Opción 2</span>
-        <h3>Retiro en el local</h3>
+        <h3>Coordinar retiro</h3>
         <p>Sin cargo. Retirás tu prenda en el local y la revisás en persona antes de llevártela.</p>
         <ul>
           <li>Calle San Martín 456, Córdoba, Argentina.</li>
@@ -325,7 +325,7 @@
         <a href="#" data-footcat="remeras">Remeras</a>
         <a href="#" data-footcat="pantalones">Pantalones</a>
         <a href="#" data-footcat="buzos">Buzos</a>
-        <a href="#" data-footcat="accesorios">Accesorios</a>
+        <a href="#" data-footcat="camperas">Camperas</a>
       </div>
       <div class="foot-col">
         <h4>Tienda</h4>
@@ -395,7 +395,7 @@
       <label>Cómo lo recibís</label>
       <div class="ship-radio-row">
         <label class="ship-radio"><input type="radio" name="tipoEntrega" value="envio" checked> Envío por correo</label>
-        <label class="ship-radio"><input type="radio" name="tipoEntrega" value="retiro"> Retiro en el local</label>
+        <label class="ship-radio"><input type="radio" name="tipoEntrega" value="retiro"> Coordinar retiro</label>
       </div>
     </div>
 
@@ -447,11 +447,11 @@ function icon(cat){
     remeras:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M30 15 L10 28 L18 42 L28 35 L28 88 L72 88 L72 35 L82 42 L90 28 L70 15 C70 15 63 24 50 24 C37 24 30 15 30 15 Z"/></svg>`,
     pantalones:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M22 12 L78 12 L82 90 L58 90 L50 40 L42 90 L18 90 Z"/><line x1="22" y1="12" x2="78" y2="12"/></svg>`,
     buzos:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M32 12 L14 24 L22 40 L30 34 L30 90 L70 90 L70 34 L78 40 L86 24 L68 12 C68 12 62 26 50 26 C38 26 32 12 32 12 Z"/><path d="M42 12 C42 20 58 20 58 12"/></svg>`,
-    accesorios:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><circle cx="50" cy="38" r="20"/><circle cx="50" cy="38" r="7"/><path d="M50 58 L50 90"/><path d="M38 90 L62 90"/></svg>`
+    camperas:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M34 12 L14 24 L18 76 L30 76 L30 90 L70 90 L70 76 L82 76 L86 24 L66 12 L58 22 L50 18 L42 22 Z"/><path d="M50 18 L50 90"/><path d="M30 52 L42 52"/><path d="M58 52 L70 52"/></svg>`
   };
-  return icons[cat]||icons.accesorios;
+  return icons[cat]||icons.camperas;
 }
-const CAT_LABEL={remeras:'Remeras',pantalones:'Pantalones',buzos:'Buzos',accesorios:'Accesorios'};
+const CAT_LABEL={remeras:'Remeras',pantalones:'Pantalones',buzos:'Buzos',camperas:'Camperas'};
 
 const seedProducts=[];
 let vendorProducts=[];
@@ -478,7 +478,7 @@ function productUrl(id){return 'producto.html?id='+encodeURIComponent(id);}
 async function loadVendorProducts(silent){
   try{
     const raw = localStorage.getItem('nagobi_vendor_products');
-    vendorProducts = raw ? JSON.parse(raw) : [];
+    vendorProducts = (raw ? JSON.parse(raw) : []).map(p=>p&&p.cat==='accesorios'?{...p,cat:'camperas'}:p);
   }catch(e){
     console.error('No se pudo leer el catálogo:', e);
     vendorProducts=[];
@@ -496,7 +496,7 @@ const fallbackSlides=[
   {cat:'remeras',tag:'Una sola de cada una',title:'Remeras',copy:'Estampas originales, algodón real, ninguna repetida.'},
   {cat:'pantalones',tag:'Cortes que no se hacen más',title:'Pantalones',copy:'Jeans rígidos, cargos y rectos de otras décadas.'},
   {cat:'buzos',tag:'Abrigo con historia',title:'Buzos',copy:'Frisa gruesa, varsity y canguros lavados a mano.'},
-  {cat:'accesorios',tag:'El detalle que cierra todo',title:'Accesorios',copy:'Gorras, cinturones y piezas que ya no se consiguen.'},
+  {cat:'camperas',tag:'Abrigo que no pasa de moda',title:'Camperas',copy:'Cuero, jean, deportivas y rompevientos de otras décadas.'},
 ];
 const track=document.getElementById('track');
 const dotsWrap=document.getElementById('dots');
@@ -568,7 +568,7 @@ track.addEventListener('click',e=>{
 
 /* ---------- CATEGORY FILTER ---------- */
 const chipRow=document.getElementById('chipRow');
-const chipDefs=[['todos','Todo'],['remeras','Remeras'],['pantalones','Pantalones'],['buzos','Buzos'],['accesorios','Accesorios']];
+const chipDefs=[['todos','Todo'],['remeras','Remeras'],['pantalones','Pantalones'],['buzos','Buzos'],['camperas','Camperas']];
 chipDefs.forEach(([key,label])=>{
   const c=document.createElement('button');
   c.className='chip'+(key==='todos'?' active':'');
@@ -764,7 +764,7 @@ function buildWhatsappMessage(shipping){
 
   const entregaLine = shipping.tipo==='envio'
     ? `Envío por correo a: ${shipping.direccion}, ${shipping.localidad}, ${shipping.provincia} (CP ${shipping.cp})`
-    : 'Retiro en el local (Córdoba)';
+    : 'Coordinar retiro (Córdoba)';
 
   const msgLines=[
     'Hola! Quiero comprar estas prendas de Nagobi Vintage:',

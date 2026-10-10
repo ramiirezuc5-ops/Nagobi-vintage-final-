@@ -32,7 +32,7 @@
 
   /* ---- header (igual que la tienda) ---- */
   header{position:sticky;top:0;z-index:50;background:var(--dark);border-bottom:3px solid var(--ink);}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:20px;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding-top:16px;padding-bottom:16px;gap:20px;}
   .logo{font-family:'Anton',sans-serif;font-size:26px;color:var(--paper);letter-spacing:.01em;display:flex;align-items:center;gap:10px;}
   .logo .dot{width:9px;height:9px;background:var(--orange);border-radius:50%;}
   .seller-link{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B7B0A0;border:1px solid var(--line);padding:10px 14px;text-transform:uppercase;letter-spacing:.05em;}
@@ -188,7 +188,7 @@
 const WHATSAPP_NUMBER='5493518012324';
 const PRODUCTS_KEY='nagobi_vendor_products';
 const CART_KEY='nagobi_cart';
-const CAT_LABEL={remeras:'Remeras',pantalones:'Pantalones',buzos:'Buzos',accesorios:'Accesorios'};
+const CAT_LABEL={remeras:'Remeras',pantalones:'Pantalones',buzos:'Buzos',camperas:'Camperas'};
 
 function icon(cat){
   const c='var(--ink)';
@@ -196,9 +196,9 @@ function icon(cat){
     remeras:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M30 15 L10 28 L18 42 L28 35 L28 88 L72 88 L72 35 L82 42 L90 28 L70 15 C70 15 63 24 50 24 C37 24 30 15 30 15 Z"/></svg>`,
     pantalones:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M22 12 L78 12 L82 90 L58 90 L50 40 L42 90 L18 90 Z"/><line x1="22" y1="12" x2="78" y2="12"/></svg>`,
     buzos:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M32 12 L14 24 L22 40 L30 34 L30 90 L70 90 L70 34 L78 40 L86 24 L68 12 C68 12 62 26 50 26 C38 26 32 12 32 12 Z"/><path d="M42 12 C42 20 58 20 58 12"/></svg>`,
-    accesorios:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><circle cx="50" cy="38" r="20"/><circle cx="50" cy="38" r="7"/><path d="M50 58 L50 90"/><path d="M38 90 L62 90"/></svg>`
+    camperas:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M34 12 L14 24 L18 76 L30 76 L30 90 L70 90 L70 76 L82 76 L86 24 L66 12 L58 22 L50 18 L42 22 Z"/><path d="M50 18 L50 90"/><path d="M30 52 L42 52"/><path d="M58 52 L70 52"/></svg>`
   };
-  return icons[cat]||icons.accesorios;
+  return icons[cat]||icons.camperas;
 }
 function money(n){return '$'+Number(n).toLocaleString('es-AR');}
 function productImages(p){return (p.images&&p.images.length)?p.images:(p.img?[p.img]:[]);}
@@ -206,7 +206,7 @@ function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className
 
 /* ---- datos ---- */
 let products=[];
-try{products=JSON.parse(localStorage.getItem(PRODUCTS_KEY)||'[]');}catch(e){products=[];}
+try{products=JSON.parse(localStorage.getItem(PRODUCTS_KEY)||'[]').map(p=>p&&p.cat==='accesorios'?{...p,cat:'camperas'}:p);}catch(e){products=[];}
 const id=new URLSearchParams(location.search).get('id');
 const p=products.find(x=>String(x.id)===String(id));
 

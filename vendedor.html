@@ -59,7 +59,7 @@
   .store-link{font-size:11.5px;color:#9A9384;text-transform:uppercase;letter-spacing:.03em;}
   .store-link:hover{color:var(--orange);}
 
-  .dash-hero{padding:36px 0 10px;}
+  .dash-hero{padding-top:36px;padding-bottom:10px;}
   .dash-hero .eyebrow{margin-bottom:14px;}
   .dash-hero h1{font-size:clamp(34px,5vw,58px);}
 
@@ -179,7 +179,7 @@
                 <option value="remeras">Remeras</option>
                 <option value="pantalones">Pantalones</option>
                 <option value="buzos">Buzos</option>
-                <option value="accesorios">Accesorios</option>
+                <option value="camperas">Camperas</option>
               </select>
             </div>
             <div class="f"><label for="pDeca">Década</label>
@@ -239,11 +239,11 @@ function icon(cat){
     remeras:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M30 15 L10 28 L18 42 L28 35 L28 88 L72 88 L72 35 L82 42 L90 28 L70 15 C70 15 63 24 50 24 C37 24 30 15 30 15 Z"/></svg>`,
     pantalones:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M22 12 L78 12 L82 90 L58 90 L50 40 L42 90 L18 90 Z"/><line x1="22" y1="12" x2="78" y2="12"/></svg>`,
     buzos:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M32 12 L14 24 L22 40 L30 34 L30 90 L70 90 L70 34 L78 40 L86 24 L68 12 C68 12 62 26 50 26 C38 26 32 12 32 12 Z"/><path d="M42 12 C42 20 58 20 58 12"/></svg>`,
-    accesorios:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><circle cx="50" cy="38" r="20"/><circle cx="50" cy="38" r="7"/><path d="M50 58 L50 90"/><path d="M38 90 L62 90"/></svg>`
+    camperas:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M34 12 L14 24 L18 76 L30 76 L30 90 L70 90 L70 76 L82 76 L86 24 L66 12 L58 22 L50 18 L42 22 Z"/><path d="M50 18 L50 90"/><path d="M30 52 L42 52"/><path d="M58 52 L70 52"/></svg>`
   };
-  return icons[cat]||icons.accesorios;
+  return icons[cat]||icons.camperas;
 }
-const CAT_LABEL={remeras:'Remeras',pantalones:'Pantalones',buzos:'Buzos',accesorios:'Accesorios'};
+const CAT_LABEL={remeras:'Remeras',pantalones:'Pantalones',buzos:'Buzos',camperas:'Camperas'};
 function money(n){return '$'+Number(n).toLocaleString('es-AR');}
 
 let myProducts=[];
@@ -277,7 +277,7 @@ document.getElementById('logoutBtn').addEventListener('click', ()=>{
 async function loadMyProducts(){
   try{
     const raw = localStorage.getItem('nagobi_vendor_products');
-    myProducts = raw ? JSON.parse(raw) : [];
+    myProducts = (raw ? JSON.parse(raw) : []).map(p=>p&&p.cat==='accesorios'?{...p,cat:'camperas'}:p);
   }catch(e){
     console.error('No se pudo leer el catálogo:', e);
     myProducts=[];
