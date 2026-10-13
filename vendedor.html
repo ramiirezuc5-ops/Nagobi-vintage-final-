@@ -291,7 +291,8 @@ async function saveMyProducts(){
     return true;
   }catch(e){
     console.error(e);
-    showToast('No se pudo guardar. La imagen puede ser demasiado grande.');
+    const mb=(JSON.stringify(myProducts).length/1048576).toFixed(1);
+    showToast('Almacenamiento lleno ('+mb+' MB de ~5 MB). Borrá prendas viejas o usá menos fotos.');
     return false;
   }
 }
@@ -318,61 +319,117 @@ function renderUploadGrid(){
   bindUploadHandler();
 }
 
-function processImageFile(file){
-  return new Promise((resolve, reject)=>{
-    if(!file.type.startsWith('image/')){
-      reject('tipo');
-      return;
-    }
+/* Formatos aceptados (incluye los que el celular a veces reporta sin MIME) */
+const IMG_EXT=/\.(jpe?g|png|webp|gif|bmp|avif|heic|heif|tiff?|jfif)$/i;
+const MAX_INPUT_MB=30;      /* tope del archivo original */
+const MAX_PHOTOS=8;         /* fotos por prenda */
+const MAX_SIDE=1000;        /* px del lado más largo */
+const TARGET_KB=140;        /* peso objetivo por foto ya optimizada */
 
-    const reader=new FileReader();
-
-    reader.onload=()=>{
-      const image=new Image();
-
-      image.onload=()=>{
-        const maxSize=1200;
-        const scale=Math.min(1, maxSize/Math.max(image.width,image.height));
-        const canvas=document.createElement('canvas');
-
-        canvas.width=Math.max(1, Math.round(image.width*scale));
-        canvas.height=Math.max(1, Math.round(image.height*scale));
-
-        const ctx=canvas.getContext('2d');
-        ctx.drawImage(image,0,0,canvas.width,canvas.height);
-
-        resolve(canvas.toDataURL('image/jpeg',0.82));
-      };
-
-      image.onerror=()=>reject('imagen');
-      image.src=reader.result;
-    };
-
-    reader.onerror=()=>reject('lectura');
-    reader.readAsDataURL(file);
+function loadBitmap(file){
+  /* createImageBitmap respeta la rotación EXIF y no bloquea la UI */
+  if(window.createImageBitmap){
+    return createImageBitmap(file,{imageOrientation:'from-image'}).catch(()=>loadViaImg(file));
+  }
+  return loadViaImg(file);
+}
+function loadViaImg(file){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{URL.revokeObjectURL(url);resolve(img);};
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('decode'));};
+    img.src=url;
+  });
+}
+function canvasToBlob(canvas,type,q){
+  return new Promise(res=>canvas.toBlob(res,type,q));
+}
+function blobToDataURL(blob){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=()=>reject(new Error('lectura'));
+    r.readAsDataURL(blob);
   });
 }
 
+async function processImageFile(file){
+  const okType=(file.type&&file.type.startsWith('image/'))||IMG_EXT.test(file.name||'');
+  if(!okType) throw new Error('tipo');
+  if(file.size>MAX_INPUT_MB*1024*1024) throw new Error('peso');
+
+  let bmp;
+  try{ bmp=await loadBitmap(file); }
+  catch(e){
+    const isHeic=/hei[cf]$/i.test(file.name||'')||/hei[cf]/i.test(file.type||'');
+    throw new Error(isHeic?'heic':'decode');
+  }
+
+  let w=bmp.width,h=bmp.height;
+  let scale=Math.min(1,MAX_SIDE/Math.max(w,h));
+  let best=null;
+
+  /* Intenta WebP (más liviano); si el navegador no lo soporta, JPEG */
+  for(let attempt=0;attempt<4;attempt++){
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(w*scale));
+    canvas.height=Math.max(1,Math.round(h*scale));
+    const ctx=canvas.getContext('2d');
+    ctx.fillStyle='#fff';                         /* PNG con transparencia: fondo blanco, no negro */
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.imageSmoothingQuality='high';
+    ctx.drawImage(bmp,0,0,canvas.width,canvas.height);
+
+    for(const q of [0.82,0.72,0.62]){
+      let blob=await canvasToBlob(canvas,'image/webp',q);
+      if(!blob||blob.type!=='image/webp') blob=await canvasToBlob(canvas,'image/jpeg',q);
+      if(!blob) continue;
+      best=blob;
+      if(blob.size<=TARGET_KB*1024) break;
+    }
+    if(best&&best.size<=TARGET_KB*1024) break;
+    scale*=0.85;                                  /* si sigue pesada, achica un poco más */
+  }
+  if(bmp.close) bmp.close();
+  if(!best) throw new Error('decode');
+  return blobToDataURL(best);
+}
+
+const UPLOAD_MSG={
+  tipo:'no es una imagen válida',
+  peso:'pesa más de '+MAX_INPUT_MB+' MB',
+  heic:'es HEIC y este navegador no puede leerlo (en el iPhone: Ajustes > Cámara > Formatos > Más compatible)',
+  decode:'está dañada o tiene un formato no compatible',
+  lectura:'no se pudo leer'
+};
+
 function bindUploadHandler(){
   document.getElementById('pImg').addEventListener('change', async function(){
-
     const files=Array.from(this.files||[]);
     if(files.length===0)return;
 
-    let huboError=false;
+    const tile=document.getElementById('uploadAddTile');
+    if(tile) tile.style.opacity='.5';
+    showToast('Procesando '+files.length+' foto'+(files.length>1?'s':'')+'…');
 
+    const errores=[];
     for(const file of files){
+      if(pendingImages.length>=MAX_PHOTOS){
+        errores.push('Máximo '+MAX_PHOTOS+' fotos por prenda');
+        break;
+      }
       try{
         const dataUrl=await processImageFile(file);
         pendingImages.push(dataUrl);
       }catch(e){
-        huboError=true;
+        console.error(file.name,e);
+        errores.push((file.name||'Una foto')+' '+(UPLOAD_MSG[e.message]||'no se pudo cargar'));
       }
     }
 
-    if(huboError) showToast('Alguna foto no se pudo cargar (formato inválido)');
-
     renderUploadGrid();
+    if(errores.length) showToast(errores[0]+(errores.length>1?' (+'+(errores.length-1)+' más)':''));
   });
 }
 
