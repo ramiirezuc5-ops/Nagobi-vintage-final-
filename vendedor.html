@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAGOBI VINTAGE — Panel de vendedor</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23141311%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2722%27 fill=%27%23FF5A1F%27/%3E%3C/svg%3E">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dark:#141311;--dark2:#1D1B17;--dark3:#242019;--paper:#F1ECDF;--paper2:#E8E1CE;
+    --orange:#FF5A1F;--acid:#C9D94B;--stamp:#C4292B;--line:#3A362E;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--dark);color:var(--paper);font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;}
+  h1,h2,h3{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;margin:0;line-height:.95;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  button{font-family:inherit;cursor:pointer;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 26px;}
+  :focus-visible{outline:3px solid var(--orange);outline-offset:2px;}
+
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:5;opacity:.045;mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== LOGIN ===== */
+  .gate-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;
+    background-image:radial-gradient(circle, rgba(255,90,31,.14) 1.4px, transparent 1.4px);background-size:20px 20px;}
+  .gate-box{width:100%;max-width:380px;border:2px solid var(--paper);padding:38px 32px;background:var(--dark2);position:relative;}
+  .gate-logo{font-family:'Anton',sans-serif;font-size:22px;display:flex;align-items:center;gap:9px;margin-bottom:26px;}
+  .gate-logo .dot{width:9px;height:9px;background:var(--orange);border-radius:50%;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--acid);border:1px solid var(--acid);padding:5px 11px;display:inline-block;margin-bottom:16px;}
+  .gate-box h2{font-size:32px;margin-bottom:8px;}
+  .gate-box p{color:#9A9384;font-size:13px;margin-bottom:24px;line-height:1.6;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;color:#B7B0A0;}
+  .field input{width:100%;background:var(--dark);border:1px solid var(--line);color:var(--paper);padding:12px 14px;font-family:'IBM Plex Mono',monospace;font-size:14px;}
+  .field input:focus{border-color:var(--orange);}
+  .gate-btn{width:100%;background:var(--orange);color:var(--dark);border:none;padding:13px;font-weight:700;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;margin-top:6px;}
+  .gate-btn:hover{background:var(--acid);}
+  .gate-error{color:var(--stamp);font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:12px;display:none;}
+  .gate-back{display:block;text-align:center;margin-top:20px;font-size:12px;color:#6B655A;font-family:'IBM Plex Mono',monospace;text-decoration:none;}
+  .gate-back:hover{color:var(--paper);}
+  .gate-hint{margin-top:18px;font-size:11px;color:#5C574C;font-family:'IBM Plex Mono',monospace;line-height:1.6;border-top:1px solid #2A2721;padding-top:14px;}
+
+  /* ===== DASHBOARD ===== */
+  #dash{display:none;}
+  .vendor-topbar{background:var(--dark2);border-bottom:3px solid var(--dark);padding:16px 0;position:sticky;top:0;z-index:20;}
+  .vendor-topbar .row{display:flex;justify-content:space-between;align-items:center;}
+  .vendor-logo{font-family:'Anton',sans-serif;font-size:22px;display:flex;align-items:center;gap:9px;}
+  .vendor-logo .dot{width:9px;height:9px;background:var(--orange);border-radius:50%;}
+  .who{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#9A9384;}
+  .exit-btn{background:none;border:1px solid var(--line);color:#C7C0AF;padding:9px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+  .exit-btn:hover{border-color:var(--orange);color:var(--orange);}
+  .store-link{font-size:11.5px;color:#9A9384;text-transform:uppercase;letter-spacing:.03em;}
+  .store-link:hover{color:var(--orange);}
+
+  .dash-hero{padding-top:36px;padding-bottom:10px;}
+  .dash-hero .eyebrow{margin-bottom:14px;}
+  .dash-hero h1{font-size:clamp(34px,5vw,58px);}
+
+  .stats{display:flex;gap:12px;margin:28px 0 30px;flex-wrap:wrap;}
+  .stat{border:1px solid var(--line);padding:16px 18px;flex:1;min-width:150px;background:var(--dark2);}
+  .stat .n{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:700;color:var(--orange);}
+  .stat .l{font-size:10.5px;color:#8A8375;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+
+  .vendor-wrap{display:grid;grid-template-columns:400px 1fr;gap:32px;align-items:start;padding-bottom:60px;}
+  @media(max-width:920px){.vendor-wrap{grid-template-columns:1fr;}}
+  .panel{border:1px solid var(--line);background:var(--dark2);padding:26px;}
+  .panel h3{font-size:19px;margin-bottom:4px;text-transform:none;font-family:'Anton',sans-serif;}
+  .panel .sub{font-size:12.5px;color:#8A8375;margin-bottom:22px;font-family:'Archivo',sans-serif;}
+  .f{margin-bottom:15px;}
+  .f label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;color:#B7B0A0;}
+  .f input,.f select,.f textarea{width:100%;border:1px solid var(--line);background:var(--dark);color:var(--paper);padding:10px 12px;font-size:14px;font-family:'Archivo',sans-serif;}
+  .f textarea{resize:vertical;min-height:60px;}
+  .f input:focus,.f select:focus,.f textarea:focus{border-color:var(--orange);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+  .upload-grid{display:flex;flex-wrap:wrap;gap:8px;}
+  .upload-thumb{position:relative;width:74px;height:74px;border:1px solid var(--line);overflow:hidden;flex-shrink:0;}
+  .upload-thumb img{width:100%;height:100%;object-fit:cover;}
+  .upload-thumb .cover-flag{position:absolute;bottom:0;left:0;right:0;background:rgba(20,19,17,.75);color:var(--acid);font-family:'IBM Plex Mono',monospace;font-size:8.5px;text-align:center;padding:2px 0;text-transform:uppercase;letter-spacing:.04em;}
+  .upload-thumb .rm{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;border:none;background:rgba(20,19,17,.85);color:var(--paper);font-size:11px;line-height:1;}
+  .upload-thumb .rm:hover{background:var(--stamp);}
+  .upload-add{width:74px;height:74px;flex-shrink:0;border:1.5px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:24px;color:#8A8375;cursor:pointer;position:relative;}
+  .upload-add:hover{border-color:var(--orange);color:var(--orange);}
+  .upload-add input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+  .upload-hint{font-size:11px;color:#6B655A;font-family:'IBM Plex Mono',monospace;margin-top:8px;line-height:1.5;}
+
+  .submit-btn{width:100%;background:var(--orange);color:var(--dark);border:none;padding:13px;font-weight:700;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-size:13px;margin-top:4px;}
+  .submit-btn:hover{background:var(--acid);}
+  .save-note{font-size:11px;color:#6B655A;font-family:'IBM Plex Mono',monospace;margin-top:10px;line-height:1.6;}
+
+  .list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .list-head h3{font-size:16px;color:#B7B0A0;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;}
+  .vp-row{display:flex;gap:14px;align-items:center;border:1px solid var(--line);background:var(--dark2);padding:12px;margin-bottom:10px;}
+  .vp-thumb{width:52px;height:52px;background:var(--paper2);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+  .vp-photo-count{position:absolute;bottom:2px;right:2px;background:rgba(20,19,17,.85);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:9px;padding:1px 4px;border-radius:3px;}
+  .vp-thumb img{width:100%;height:100%;object-fit:cover;}
+  .vp-thumb svg{width:30px;height:30px;}
+  .vp-info{flex:1;min-width:0;}
+  .vp-info .name{font-weight:700;font-size:14px;color:var(--paper);}
+  .vp-info .meta{font-size:11.5px;color:#8A8375;font-family:'IBM Plex Mono',monospace;}
+  .vp-actions{display:flex;gap:8px;flex-shrink:0;}
+  .vp-del{background:none;border:1px solid var(--line);padding:6px 10px;font-size:11.5px;color:var(--stamp);font-family:'IBM Plex Mono',monospace;}
+  .vp-del:hover{background:var(--stamp);color:var(--paper);border-color:var(--stamp);}
+  .vp-edit{background:none;border:1px solid var(--line);padding:6px 10px;font-size:11.5px;color:var(--acid);font-family:'IBM Plex Mono',monospace;}
+  .vp-edit:hover{background:var(--acid);color:var(--dark);border-color:var(--acid);}
+  .vp-row.editing{border-color:var(--orange);}
+  .cancel-edit-btn{width:100%;background:none;border:1px solid var(--line);color:#C7C0AF;padding:11px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-size:12px;margin-top:8px;}
+  .cancel-edit-btn:hover{border-color:var(--paper);color:var(--paper);}
+  .editing-flag{display:none;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--orange);border:1px solid var(--orange);padding:5px 11px;margin-bottom:16px;}
+  .editing-flag.show{display:inline-block;}
+  .empty{border:1px dashed var(--line);padding:40px 20px;text-align:center;color:#6B655A;font-size:13.5px;}
+
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--paper);color:var(--dark);padding:13px 22px;font-family:'IBM Plex Mono',monospace;font-size:13px;z-index:220;opacity:0;pointer-events:none;transition:.25s;border:1px solid var(--orange);text-transform:uppercase;letter-spacing:.03em;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN GATE ===== -->
+<div class="gate-wrap" id="gateWrap">
+  <div class="gate-box">
+    <div class="gate-logo"><span class="dot"></span>NAGOBI VINTAGE</div>
+    <span class="eyebrow">Acceso dueño / vendedor</span>
+    <h2>Entrá a<br>vender.</h2>
+    <p>Esta página es aparte de la tienda pública. Solo vos, como dueño de Nagobi Vintage, tenés estas credenciales.</p>
+    <form id="loginForm">
+      <div class="field"><label for="user">Usuario</label><input type="text" id="user" autocomplete="username" required></div>
+      <div class="field"><label for="pass">Contraseña</label><input type="password" id="pass" autocomplete="current-password" required></div>
+      <button type="submit" class="gate-btn">Iniciar sesión</button>
+      <div class="gate-error" id="gateError">Usuario o contraseña incorrectos.</div>
+    </form>
+    <a href="index.html" class="gate-back">← Volver a la tienda</a>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dash">
+  <div class="vendor-topbar">
+    <div class="wrap row">
+      <div class="vendor-logo"><span class="dot"></span>NAGOBI VINTAGE</div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span class="who mono" id="whoAmI"></span>
+        <a href="index.html" class="store-link mono">Ver tienda ↗</a>
+        <button class="exit-btn" id="logoutBtn">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap dash-hero">
+    <span class="eyebrow">Panel privado — no visible para compradores</span>
+    <h1>Vender.</h1>
+  </div>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="n mono" id="statCount">0</div><div class="l">Prendas publicadas</div></div>
+      <div class="stat"><div class="n mono" id="statValue">$0</div><div class="l">Valor de inventario</div></div>
+      <div class="stat"><div class="n mono" id="statCats">0</div><div class="l">Categorías activas</div></div>
+    </div>
+
+    <div class="vendor-wrap">
+      <div class="panel">
+        <span class="editing-flag" id="editingFlag">Editando prenda existente</span>
+        <h3 id="formTitle">Cargar prenda</h3>
+        <div class="sub" id="formSub">Se publica al instante en el catálogo público de la tienda.</div>
+        <form id="productForm">
+          <div class="f"><label for="pName">Nombre</label><input type="text" id="pName" placeholder="Ej: Campera windbreaker 90s" required></div>
+          <div class="two-col">
+            <div class="f"><label for="pCat">Categoría</label>
+              <select id="pCat" required>
+                <option value="remeras">Remeras</option>
+                <option value="pantalones">Pantalones</option>
+                <option value="buzos">Buzos</option>
+                <option value="camperas">Camperas</option>
+              </select>
+            </div>
+            <div class="f"><label for="pDeca">Década</label>
+              <select id="pDeca">
+                <option value="70s">70s</option>
+                <option value="80s">80s</option>
+                <option value="90s" selected>90s</option>
+                <option value="Y2K">Y2K</option>
+                <option value="2010s">2010s</option>
+              </select>
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="f"><label for="pCond">Condición</label>
+              <select id="pCond">
+                <option value="Excelente">Excelente</option>
+                <option value="Muy bueno" selected>Muy bueno</option>
+                <option value="Bueno">Bueno</option>
+              </select>
+            </div>
+            <div class="f"><label for="pPrice">Precio (ARS)</label><input type="number" id="pPrice" placeholder="24000" min="0" required></div>
+          </div>
+          <div class="f"><label for="pDesc">Descripción</label><textarea id="pDesc" placeholder="Talle, detalles, historia de la pieza..."></textarea></div>
+          <div class="f"><label>Fotos (podés subir varias)</label>
+            <div class="upload-grid" id="uploadGrid">
+              <label class="upload-add" id="uploadAddTile">
+                <span>+</span>
+                <input type="file" id="pImg" accept="image/*" multiple>
+              </label>
+            </div>
+            <div class="upload-hint">La primera foto es la que se ve como portada en la tienda.</div>
+          </div>
+          <button type="submit" class="submit-btn" id="submitBtn">Publicar prenda</button>
+          <button type="button" class="cancel-edit-btn" id="cancelEditBtn" style="display:none;">Cancelar edición</button>
+          <div class="save-note">Se guarda en el catálogo compartido de la tienda. Puede tardar unos segundos en aparecer del otro lado.</div>
+        </form>
+      </div>
+
+      <div>
+        <div class="list-head"><h3>Mis prendas publicadas</h3></div>
+        <div id="vendorList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- SESIÓN (usuario y contraseña se validan en el servidor: /api/login) ---------- */
+let authToken=sessionStorage.getItem('nagobi_token')||'';
+const LEGACY_KEY='nagobi_vendor_products';   /* donde se guardaba antes (solo en el navegador) */
+const MIGRADO_KEY='nagobi_migrado';
+
+async function api(path,opts={}){
+  const headers={};
+  if(opts.body!==undefined) headers['Content-Type']='application/json';
+  if(authToken) headers['Authorization']='Bearer '+authToken;
+  const res=await fetch(path,{
+    method:opts.method||'GET',
+    headers,
+    body:opts.body!==undefined?JSON.stringify(opts.body):undefined
+  });
+  let data=null;
+  try{data=await res.json();}catch(e){}
+  if(res.status===401 && path!=='/api/login'){
+    cerrarSesion();
+    throw new Error('Tu sesión venció. Ingresá de nuevo.');
+  }
+  if(!res.ok) throw new Error((data&&data.error)||('Error del servidor ('+res.status+')'));
+  return data;
+}
+
+function icon(cat){
+  const c='#141311';
+  const icons={
+    remeras:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M30 15 L10 28 L18 42 L28 35 L28 88 L72 88 L72 35 L82 42 L90 28 L70 15 C70 15 63 24 50 24 C37 24 30 15 30 15 Z"/></svg>`,
+    pantalones:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M22 12 L78 12 L82 90 L58 90 L50 40 L42 90 L18 90 Z"/><line x1="22" y1="12" x2="78" y2="12"/></svg>`,
+    buzos:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M32 12 L14 24 L22 40 L30 34 L30 90 L70 90 L70 34 L78 40 L86 24 L68 12 C68 12 62 26 50 26 C38 26 32 12 32 12 Z"/><path d="M42 12 C42 20 58 20 58 12"/></svg>`,
+    camperas:`<svg viewBox="0 0 100 100" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"><path d="M34 12 L14 24 L18 76 L30 76 L30 90 L70 90 L70 76 L82 76 L86 24 L66 12 L58 22 L50 18 L42 22 Z"/><path d="M50 18 L50 90"/><path d="M30 52 L42 52"/><path d="M58 52 L70 52"/></svg>`
+  };
+  return icons[cat]||icons.camperas;
+}
+const CAT_LABEL={remeras:'Remeras',pantalones:'Pantalones',buzos:'Buzos',camperas:'Camperas'};
+function money(n){return '$'+Number(n).toLocaleString('es-AR');}
+
+let myProducts=[];
+let nextId=Date.now();
+let pendingImages=[];
+let editingId=null;
+
+/* ---------- LOGIN ---------- */
+function mostrarPanel(u){
+  document.getElementById('gateError').style.display='none';
+  document.getElementById('gateWrap').style.display='none';
+  document.getElementById('dash').style.display='block';
+  document.getElementById('whoAmI').textContent='Sesión: '+u;
+}
+function cerrarSesion(){
+  authToken='';
+  sessionStorage.removeItem('nagobi_token');
+  sessionStorage.removeItem('nagobi_user');
+  document.getElementById('dash').style.display='none';
+  document.getElementById('gateWrap').style.display='flex';
+  document.getElementById('loginForm').reset();
+  resetFormToCreateMode();
+}
+
+document.getElementById('loginForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const u=document.getElementById('user').value.trim();
+  const p=document.getElementById('pass').value;
+  const err=document.getElementById('gateError');
+  err.style.display='none';
+  try{
+    const r=await api('/api/login',{method:'POST',body:{user:u,pass:p}});
+    authToken=r.token;
+    sessionStorage.setItem('nagobi_token',authToken);
+    sessionStorage.setItem('nagobi_user',u);
+    mostrarPanel(u);
+    await loadMyProducts();
+    migrarLocal();
+  }catch(ex){
+    err.textContent=/incorrectos/i.test(ex.message)?'Usuario o contraseña incorrectos.':ex.message;
+    err.style.display='block';
+  }
+});
+document.getElementById('logoutBtn').addEventListener('click', cerrarSesion);
+
+/* ---------- CATÁLOGO (base de datos MongoDB Atlas, vía /api) ---------- */
+async function loadMyProducts(){
+  try{
+    myProducts = await api('/api/productos?fresh='+Date.now());
+    myProducts = myProducts.map(p=>p&&p.cat==='accesorios'?{...p,cat:'camperas'}:p);
+  }catch(e){
+    console.error('No se pudo leer el catálogo:', e);
+    showToast('No se pudo cargar el catálogo: '+e.message);
+    myProducts=[];
+  }
+  renderVendorPanel();
+}
+
+/* Prendas que quedaron guardadas solo en este navegador (versión anterior): se suben una sola vez */
+async function migrarLocal(){
+  if(localStorage.getItem(MIGRADO_KEY)) return;
+  let viejos=[];
+  try{viejos=JSON.parse(localStorage.getItem(LEGACY_KEY)||'[]');}catch(e){}
+  if(!Array.isArray(viejos)||viejos.length===0) return;
+  if(!confirm('Encontramos '+viejos.length+' prenda(s) guardadas solo en este navegador. ¿Querés subirlas a la base de datos para que las vea todo el mundo?')) return;
+
+  showToast('Subiendo prendas…');
+  let ok=0; const fallidas=[];
+  for(const p of [...viejos].reverse()){      /* de la más vieja a la más nueva */
+    const images=(p.images&&p.images.length)?p.images:(p.img?[p.img]:[]);
+    try{
+      await api('/api/productos',{method:'POST',body:{
+        name:p.name,cat:p.cat==='accesorios'?'camperas':p.cat,deca:p.deca||'',cond:p.cond||'',
+        price:p.price,desc:p.desc||'',images
+      }});
+      ok++;
+    }catch(e){fallidas.push(p.name||'sin nombre');}
+  }
+  localStorage.setItem(MIGRADO_KEY,'1');       /* evita duplicar; los datos viejos no se borran */
+  await loadMyProducts();
+  showToast(ok+' prenda(s) subida(s)'+(fallidas.length?'. No se pudieron subir: '+fallidas.join(', '):'.'));
+}
+
+/* ---------- UPLOAD (multi-foto) ---------- */
+const uploadGrid=document.getElementById('uploadGrid');
+
+function renderUploadGrid(){
+  const thumbs=pendingImages.map((src,i)=>`
+    <div class="upload-thumb">
+      <img src="${src}" alt="Foto ${i+1}">
+      ${i===0?'<span class="cover-flag">Portada</span>':''}
+      <button type="button" class="rm" data-idx="${i}" aria-label="Quitar foto">✕</button>
+    </div>
+  `).join('');
+
+  uploadGrid.innerHTML = thumbs + `
+    <label class="upload-add" id="uploadAddTile">
+      <span>+</span>
+      <input type="file" id="pImg" accept="image/*" multiple>
+    </label>
+  `;
+
+  bindUploadHandler();
+}
+
+/* Formatos aceptados (incluye los que el celular a veces reporta sin MIME) */
+const IMG_EXT=/\.(jpe?g|png|webp|gif|bmp|avif|heic|heif|tiff?|jfif)$/i;
+const MAX_INPUT_MB=30;      /* tope del archivo original */
+const MAX_PHOTOS=8;         /* fotos por prenda */
+const MAX_SIDE=1000;        /* px del lado más largo */
+const TARGET_KB=140;        /* peso objetivo por foto ya optimizada */
+
+function loadBitmap(file){
+  /* createImageBitmap respeta la rotación EXIF y no bloquea la UI */
+  if(window.createImageBitmap){
+    return createImageBitmap(file,{imageOrientation:'from-image'}).catch(()=>loadViaImg(file));
+  }
+  return loadViaImg(file);
+}
+function loadViaImg(file){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{URL.revokeObjectURL(url);resolve(img);};
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('decode'));};
+    img.src=url;
+  });
+}
+function canvasToBlob(canvas,type,q){
+  return new Promise(res=>canvas.toBlob(res,type,q));
+}
+function blobToDataURL(blob){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=()=>reject(new Error('lectura'));
+    r.readAsDataURL(blob);
+  });
+}
+
+async function processImageFile(file){
+  const okType=(file.type&&file.type.startsWith('image/'))||IMG_EXT.test(file.name||'');
+  if(!okType) throw new Error('tipo');
+  if(file.size>MAX_INPUT_MB*1024*1024) throw new Error('peso');
+
+  let bmp;
+  try{ bmp=await loadBitmap(file); }
+  catch(e){
+    const isHeic=/hei[cf]$/i.test(file.name||'')||/hei[cf]/i.test(file.type||'');
+    throw new Error(isHeic?'heic':'decode');
+  }
+
+  let w=bmp.width,h=bmp.height;
+  let scale=Math.min(1,MAX_SIDE/Math.max(w,h));
+  let best=null;
+
+  /* Intenta WebP (más liviano); si el navegador no lo soporta, JPEG */
+  for(let attempt=0;attempt<4;attempt++){
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(w*scale));
+    canvas.height=Math.max(1,Math.round(h*scale));
+    const ctx=canvas.getContext('2d');
+    ctx.fillStyle='#fff';                         /* PNG con transparencia: fondo blanco, no negro */
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.imageSmoothingQuality='high';
+    ctx.drawImage(bmp,0,0,canvas.width,canvas.height);
+
+    for(const q of [0.82,0.72,0.62]){
+      let blob=await canvasToBlob(canvas,'image/webp',q);
+      if(!blob||blob.type!=='image/webp') blob=await canvasToBlob(canvas,'image/jpeg',q);
+      if(!blob) continue;
+      best=blob;
+      if(blob.size<=TARGET_KB*1024) break;
+    }
+    if(best&&best.size<=TARGET_KB*1024) break;
+    scale*=0.85;                                  /* si sigue pesada, achica un poco más */
+  }
+  if(bmp.close) bmp.close();
+  if(!best) throw new Error('decode');
+  return blobToDataURL(best);
+}
+
+const UPLOAD_MSG={
+  tipo:'no es una imagen válida',
+  peso:'pesa más de '+MAX_INPUT_MB+' MB',
+  heic:'es HEIC y este navegador no puede leerlo (en el iPhone: Ajustes > Cámara > Formatos > Más compatible)',
+  decode:'está dañada o tiene un formato no compatible',
+  lectura:'no se pudo leer'
+};
+
+function bindUploadHandler(){
+  document.getElementById('pImg').addEventListener('change', async function(){
+    const files=Array.from(this.files||[]);
+    if(files.length===0)return;
+
+    const tile=document.getElementById('uploadAddTile');
+    if(tile) tile.style.opacity='.5';
+    showToast('Procesando '+files.length+' foto'+(files.length>1?'s':'')+'…');
+
+    const errores=[];
+    for(const file of files){
+      if(pendingImages.length>=MAX_PHOTOS){
+        errores.push('Máximo '+MAX_PHOTOS+' fotos por prenda');
+        break;
+      }
+      try{
+        const dataUrl=await processImageFile(file);
+        pendingImages.push(dataUrl);
+      }catch(e){
+        console.error(file.name,e);
+        errores.push((file.name||'Una foto')+' '+(UPLOAD_MSG[e.message]||'no se pudo cargar'));
+      }
+    }
+
+    renderUploadGrid();
+    if(errores.length) showToast(errores[0]+(errores.length>1?' (+'+(errores.length-1)+' más)':''));
+  });
+}
+
+uploadGrid.addEventListener('click', e=>{
+  const rmBtn=e.target.closest('.rm');
+  if(!rmBtn)return;
+  const idx=Number(rmBtn.dataset.idx);
+  pendingImages.splice(idx,1);
+  renderUploadGrid();
+});
+
+bindUploadHandler();
+
+/* ---------- ADD / EDIT PRODUCT ---------- */
+function resetFormToCreateMode(){
+  editingId=null;
+  document.getElementById('productForm').reset();
+  pendingImages=[];
+  renderUploadGrid();
+  document.getElementById('formTitle').textContent='Cargar prenda';
+  document.getElementById('formSub').textContent='Se publica al instante en el catálogo público de la tienda.';
+  document.getElementById('submitBtn').textContent='Publicar prenda';
+  document.getElementById('cancelEditBtn').style.display='none';
+  document.getElementById('editingFlag').classList.remove('show');
+  document.querySelectorAll('.vp-row').forEach(r=>r.classList.remove('editing'));
+}
+
+function startEditProduct(id){
+  const p=myProducts.find(p=>String(p.id)===String(id));
+  if(!p)return;
+
+  editingId=p.id;
+
+  document.getElementById('pName').value=p.name;
+  document.getElementById('pCat').value=p.cat;
+  document.getElementById('pDeca').value=p.deca;
+  document.getElementById('pCond').value=p.cond;
+  document.getElementById('pPrice').value=p.price;
+  document.getElementById('pDesc').value=p.desc||'';
+
+  // Compatibilidad con prendas viejas que solo tenían "img" (una sola foto)
+  pendingImages = (p.images && p.images.length) ? [...p.images] : (p.img ? [p.img] : []);
+  renderUploadGrid();
+
+  document.getElementById('formTitle').textContent='Editar prenda';
+  document.getElementById('formSub').textContent='Estás modificando una prenda ya publicada.';
+  document.getElementById('submitBtn').textContent='Guardar cambios';
+  document.getElementById('cancelEditBtn').style.display='block';
+  document.getElementById('editingFlag').classList.add('show');
+
+  document.querySelectorAll('.vp-row').forEach(r=>r.classList.toggle('editing', r.dataset.id===String(id)));
+
+  document.querySelector('.panel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+document.getElementById('cancelEditBtn').addEventListener('click', ()=>{
+  resetFormToCreateMode();
+});
+
+document.getElementById('productForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const name=document.getElementById('pName').value.trim();
+  const cat=document.getElementById('pCat').value;
+  const deca=document.getElementById('pDeca').value;
+  const cond=document.getElementById('pCond').value;
+  const price=Number(document.getElementById('pPrice').value);
+  const desc=document.getElementById('pDesc').value.trim();
+  if(!name||!price){showToast('Completá nombre y precio');return;}
+
+  const body={name,cat,deca,cond,price,desc,images:[...pendingImages]};
+  const btn=document.getElementById('submitBtn');
+  const textoBtn=btn.textContent;
+  btn.disabled=true; btn.textContent='Guardando…';
+
+  try{
+    if(editingId){
+      /* ----- MODO EDICIÓN ----- */
+      const idx=myProducts.findIndex(p=>String(p.id)===String(editingId));
+      if(idx===-1){showToast('No se encontró la prenda a editar');resetFormToCreateMode();return;}
+      const updated=await api('/api/productos/'+encodeURIComponent(editingId),{method:'PUT',body});
+      myProducts[idx]=updated;
+      showToast('Cambios guardados');
+    }else{
+      /* ----- MODO CREACIÓN ----- */
+      const created=await api('/api/productos',{method:'POST',body});
+      myProducts.unshift(created);
+      showToast('Prenda publicada en la tienda');
+    }
+    resetFormToCreateMode();
+    renderVendorPanel();
+  }catch(err){
+    console.error(err);
+    showToast(err.message);
+  }finally{
+    btn.disabled=false;
+    if(btn.textContent==='Guardando…') btn.textContent=textoBtn;
+  }
+});
+
+function renderVendorPanel(){
+  document.getElementById('statCount').textContent=myProducts.length;
+  document.getElementById('statValue').textContent=money(myProducts.reduce((s,p)=>s+p.price,0));
+  document.getElementById('statCats').textContent=new Set(myProducts.map(p=>p.cat)).size;
+
+  const list=document.getElementById('vendorList');
+  if(myProducts.length===0){
+    list.innerHTML=`<div class="empty">Todavía no publicaste prendas. Usá el formulario para cargar la primera.</div>`;
+    return;
+  }
+  list.innerHTML=myProducts.map(p=>{
+    const imgs=(p.images&&p.images.length)?p.images:(p.img?[p.img]:[]);
+    return `
+    <div class="vp-row" data-id="${p.id}">
+      <div class="vp-thumb">${imgs[0]?`<img src="${imgs[0]}">`:icon(p.cat)}${imgs.length>1?`<span class="vp-photo-count">+${imgs.length-1}</span>`:''}</div>
+      <div class="vp-info"><div class="name">${p.name}</div><div class="meta">${CAT_LABEL[p.cat]} · ${p.deca} · ${money(p.price)}</div></div>
+      <div class="vp-actions">
+        <button class="vp-edit" data-id="${p.id}">Editar</button>
+        <button class="vp-del" data-id="${p.id}">Eliminar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+document.getElementById('vendorList').addEventListener('click', async e=>{
+  const editBtn=e.target.closest('.vp-edit');
+  if(editBtn){
+    startEditProduct(editBtn.dataset.id);
+    return;
+  }
+
+  const btn=e.target.closest('.vp-del');
+  if(!btn)return;
+
+  if(String(editingId)===String(btn.dataset.id)){
+    resetFormToCreateMode();
+  }
+
+  try{
+    await api('/api/productos/'+encodeURIComponent(btn.dataset.id),{method:'DELETE'});
+    myProducts=myProducts.filter(p=>String(p.id)!==String(btn.dataset.id));
+    renderVendorPanel();
+    showToast('Prenda eliminada');
+  }catch(err){
+    showToast(err.message);
+  }
+});
+
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* Si ya había una sesión abierta en esta pestaña, volver directo al panel */
+if(authToken){
+  mostrarPanel(sessionStorage.getItem('nagobi_user')||'');
+  loadMyProducts();
+}
+</script>
+</body>
+</html>

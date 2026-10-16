@@ -1,0 +1,28 @@
+{
+  "name": "nagobi-vintage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "homepage": "https://github.com/ramiirezuc5-ops/Nagobi-vintage-final-#readme",
+  "bugs": {
+    "url": "https://github.com/ramiirezuc5-ops/Nagobi-vintage-final-/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramiirezuc5-ops/Nagobi-vintage-final-.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0",
+    "mongodb": "^7.7.0",
+    "mongoose": "^8.24.5"
+  },
+  "keywords": []
+}
