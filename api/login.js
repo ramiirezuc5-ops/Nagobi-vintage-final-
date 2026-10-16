@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { signToken } from "./_lib/db.js";
+import { firmarToken } from "./_lib.js";
 
 const same = (a, b) => {
   const x = Buffer.from(String(a)), y = Buffer.from(String(b));
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Faltan variables de entorno en el servidor" });
 
   if (same(user ?? "", process.env.ADMIN_USER) && same(pass ?? "", process.env.ADMIN_PASS)) {
-    return res.status(200).json({ token: signToken(user) });
+    return res.status(200).json({ token: firmarToken() });
   }
   return res.status(401).json({ error: "Usuario o contraseña incorrectos" });
 }
